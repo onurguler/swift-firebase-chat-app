@@ -12,9 +12,25 @@ class ConversationsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         // Do any additional setup after loading the view.
+        view.backgroundColor = .red
     }
 
-
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Eğer kullanıcı login olmamışsa login ekranına yönlendir
+        let isLogggedIn = UserDefaults.standard.bool(forKey: "logged_in")
+        
+        if !isLogggedIn {
+            let vc = LoginViewController()
+            let nav = UINavigationController(rootViewController: vc)
+            nav.modalPresentationStyle = .fullScreen
+            // animated false olduğunda conversation ekranının görünme süresi biraz daha kısa olur
+            present(nav, animated: false)
+        }
+    }
+    
 }
 
