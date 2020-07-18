@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class ConversationsViewController: UIViewController {
 
@@ -21,9 +22,20 @@ class ConversationsViewController: UIViewController {
         super.viewDidAppear(animated)
         
         // Eğer kullanıcı login olmamışsa login ekranına yönlendir
-        let isLogggedIn = UserDefaults.standard.bool(forKey: "logged_in")
-        
-        if !isLogggedIn {
+        //        let isLogggedIn = UserDefaults.standard.bool(forKey: "logged_in")
+        //
+        //        if !isLogggedIn {
+        //            let vc = LoginViewController()
+        //            let nav = UINavigationController(rootViewController: vc)
+        //            nav.modalPresentationStyle = .fullScreen
+        //            // animated false olduğunda conversation ekranının görünme süresi biraz daha kısa olur
+        //            present(nav, animated: false)
+        //        }
+        validateAuth()
+    }
+    
+    private func validateAuth() {
+        if FirebaseAuth.Auth.auth().currentUser == nil {
             let vc = LoginViewController()
             let nav = UINavigationController(rootViewController: vc)
             nav.modalPresentationStyle = .fullScreen
@@ -31,6 +43,5 @@ class ConversationsViewController: UIViewController {
             present(nav, animated: false)
         }
     }
-    
 }
 
