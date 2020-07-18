@@ -21,6 +21,9 @@ class RegisterViewController: UIViewController {
         imageView.image = UIImage(systemName: "person")
         imageView.tintColor = .gray
         imageView.contentMode = .scaleAspectFit
+        imageView.layer.masksToBounds = true
+        imageView.layer.borderWidth = 2 
+        imageView.layer.borderColor = UIColor.lightGray.cgColor
         return imageView
     }()
     
@@ -116,13 +119,8 @@ class RegisterViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Do any additional setup after loading the view.
         title = "Create Account"
         view.backgroundColor = .white
-        //        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Register",
-        //                                                            style: .done,
-        //                                                            target: self,
-        //                                                            action: #selector(didTapRegister))
         
         registerButton.addTarget(self,
                               action: #selector(registerButtonTapped),
@@ -165,6 +163,8 @@ class RegisterViewController: UIViewController {
                                  width: size,
                                  height: size)
         
+        imageView.layer.cornerRadius = imageView.width / 2.0 // make image to full rounded
+        
         firstNameField.frame = CGRect(x: 30,
                                       y: imageView.bottom + 10,
                                       width: scrollView.width - 60 ,
@@ -192,7 +192,7 @@ class RegisterViewController: UIViewController {
     }
     
     @objc private func didTapChangeProfilePic() {
-        print("change profile pic")
+        presentPhotoActionSheet()
     }
     
     @objc private func registerButtonTapped() {
@@ -229,38 +229,19 @@ class RegisterViewController: UIViewController {
         present(alert, animated: true)
     }
     
-    //    @objc private func didTapRegister() {
-    //        // Register ekranına yönlendir
-    //        let vc = RegisterViewController()
-    //        vc.title = "Create Account"
-    //
-    //        // Login ekranına geri dönmüyor login ekranını açtığı gibi açıyor
-    //        // let nav = UINavigationController(rootViewController: vc)
-    //        // nav.modalPresentationStyle = .fullScreen
-    //        // present(nav, animated: false)
-    //
-    //        // Login ekranına geri dönebilmek için bu şekilde yönlendirdik
-    //        navigationController?.pushViewController(vc, animated: true)
-    //    }
-    
-    
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destination.
-     // Pass the selected object to the new view controller.
-     }
-     */
-    
 }
 
 extension RegisterViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
-        if textField == emailField {
+        if textField == firstNameField {
+            lastNameField.becomeFirstResponder()
+        }
+        else if textField == lastNameField {
+            emailField.becomeFirstResponder()
+        }
+        else if textField == emailField {
             passwordField.becomeFirstResponder()
         }
         else if textField == passwordField {
@@ -268,6 +249,66 @@ extension RegisterViewController: UITextFieldDelegate {
         }
         
         return true
+    }
+    
+}
+
+extension RegisterViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func presentPhotoActionSheet() {
+        let actionSheet = UIAlertController(title: "Select Profile Picture",
+                                            message: "How would you like to select a picture?",
+                                            preferredStyle: .actionSheet)
+        
+        actionSheet.addAction(UIAlertAction(title: "Cancel",
+                                            style: .cancel,
+                                            handler: nil))
+        actionSheet.addAction(UIAlertAction(title: "Take Photo",
+                                            style: .default,
+                                            handler: { [weak self] _ in
+                                                
+                                                self?.presentCamera()
+                                                
+        }))
+        actionSheet.addAction(UIAlertAction(title: "Choose Photo",
+                                            style: .default,
+                                            handler: { [weak self] _ in
+                                                
+                                                self?.presentPhotoPicker()
+                                                
+        }))
+        
+        present(actionSheet, animated: true)
+    }
+    
+    func presentCamera() {
+        let vc = UIImagePickerController()
+        vc.sourceType = .camera
+        vc.delegate = self
+        vc.allowsEditing = true // resmi kırpma gibi özellikleri aktif ediyoruz
+        present(vc, animated: true )
+    }
+    
+    func presentPhotoPicker() {
+        let vc = UIImagePickerController()
+        vc.sourceType = .photoLibrary
+        vc.delegate = self
+        vc.allowsEditing = true // resmi kırpma gibi özellikleri aktif ediyoruz
+        present(vc, animated: true )
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true, completion: nil)
+
+        guard let selectedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else {
+            return
+        }
+        
+        self.imageView.image = selectedImage
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
     }
     
 }

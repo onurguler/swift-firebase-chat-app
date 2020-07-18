@@ -52,13 +52,13 @@ class LoginViewController: UIViewController {
         field.layer.borderColor = UIColor.lightGray.cgColor
         // field.setLeftPaddingPoints(10)
         // field.setRightPaddingPoints(10)
-        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0)) // soldan padding ekle
         field.leftViewMode = .always
-        field.rightView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
+        field.rightView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0)) // sağdan padding ekle
         field.rightViewMode = .always
         field.backgroundColor = .white
         field.placeholder = "Password..."
-        field.isSecureTextEntry = true
+        field.isSecureTextEntry = true // içindeki texti parola olarak göster
         return field
     }();
     
@@ -133,6 +133,7 @@ class LoginViewController: UIViewController {
         emailField.resignFirstResponder()
         passwordField.resignFirstResponder()
         
+        // Form validation
         guard let email = emailField.text, let password = passwordField.text,
             !email.isEmpty, !password.isEmpty, password.count >= 6 else {
                 alertUserLoginError()
@@ -167,17 +168,6 @@ class LoginViewController: UIViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
     
-    
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destination.
-     // Pass the selected object to the new view controller.
-     }
-     */
-    
 }
 
 extension LoginViewController: UITextFieldDelegate {
@@ -185,9 +175,11 @@ extension LoginViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
         if textField == emailField {
+            // email field yazıldıktan sonra entera basıldığında password fielda focusla
             passwordField.becomeFirstResponder()
         }
         else if textField == passwordField {
+            // pasword field yazıldıktan sonra done a basıldığında otomatik olarak login butonuna tıkla
             loginButtonTapped()
         }
         
