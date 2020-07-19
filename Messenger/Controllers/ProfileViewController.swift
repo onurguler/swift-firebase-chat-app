@@ -8,6 +8,8 @@
 
 import UIKit
 import FirebaseAuth
+import FBSDKLoginKit
+import FBSDKCoreKit
 
 class ProfileViewController: UIViewController {
 
@@ -22,6 +24,7 @@ class ProfileViewController: UIViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.delegate = self
         tableView.dataSource = self
+        
     }
 
 }
@@ -50,9 +53,18 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
                 return
             }
             
+            // Facebook logout
+            FBSDKLoginKit.LoginManager().logOut()
+            
             // Logout
             do {
                 try FirebaseAuth.Auth.auth().signOut()
+                
+                // Facebook logout  - if kontrolune gerek yok hata alınmıyor
+                //                if AccessToken.current != nil {
+                //                    let loginManager = LoginManager()
+                //                    loginManager.logOut()
+                //                }
                 
                 // show login screen
                 let vc = LoginViewController()
