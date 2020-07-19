@@ -9,6 +9,7 @@
 import UIKit
 import FirebaseAuth
 import FBSDKLoginKit
+import GoogleSignIn
 
 class LoginViewController: UIViewController {
     
@@ -82,8 +83,25 @@ class LoginViewController: UIViewController {
         return button
     }()
     
+    private let googleLoginButton = GIDSignInButton()
+    
+    // Google sign in app delegate te bulunduğu için bir şekilde bunu login controllera bildirmemiz gerekiyor
+    // çünkü login olduğunda login ekranını kapatıp ana ekrana geçeceğiz
+    private var loginObserver: NSObjectProtocol?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        loginObserver  = NotificationCenter.default.addObserver(forName: .didLogInNotification, object: nil, queue: .main, using: { [weak self] _ in
+            guard let strongSelf = self else {
+                return
+            }
+            
+            // Go back the main screen - conversations
+            strongSelf.navigationController?.dismiss(animated: true, completion: nil)
+        })
+        
+        GIDSignIn.sharedInstance()?.presentingViewController = self
         
         // Do any additional setup after loading the view.
         title = "Log In"
@@ -109,6 +127,13 @@ class LoginViewController: UIViewController {
         scrollView.addSubview(passwordField)
         scrollView.addSubview(loginButton)
         scrollView.addSubview(facebookLoginButton)
+        scrollView.addSubview(googleLoginButton)
+    }
+    
+    deinit {
+        if let observer = loginObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -138,13 +163,18 @@ class LoginViewController: UIViewController {
                                    width: scrollView.width - 60 ,
                                    height: 52)
         
-        //        facebookLoginButton.frame = CGRect(x: 30,
-        //                                           y: loginButton.bottom + 10,
-        //                                           width: scrollView.width - 60,
-        //                                           height: 52)
+        facebookLoginButton.frame = CGRect(x: 30,
+                                           y: loginButton.bottom + 10,
+                                           width: scrollView.width - 60,
+                                           height: 52)
         
-        facebookLoginButton.center = scrollView.center
-        facebookLoginButton.frame.origin.y = loginButton.bottom + 20
+        // facebookLoginButton.center = scrollView.center
+        // facebookLoginButton.frame.origin.y = loginButton.bottom + 20
+        
+        googleLoginButton.frame = CGRect(x: 30,
+                                         y: facebookLoginButton.bottom + 10,
+                                         width: scrollView.width - 60,
+                                         height: 52)
     }
     
     @objc private func loginButtonTapped() {
@@ -224,7 +254,9 @@ extension LoginViewController: UITextFieldDelegate {
     
 }
 
-extension LoginViewController: LoginButtonDelegate {
+// Facebook login extension
+extension LoginViewController: FBSDKLoginKit.LoginButtonDelegate {
+    
     func loginButtonDidLogOut(_ loginButton: FBLoginButton) {
         // No operation
     }
@@ -236,6 +268,7 @@ extension LoginViewController: LoginButtonDelegate {
             return
         }
         
+        // Get public profile data
         let facebookRequest = FBSDKLoginKit.GraphRequest(graphPath: "me",
                                                          parameters: ["fields": "email, name, first_name, last_name"],
                                                          tokenString: token,
@@ -279,9 +312,6 @@ extension LoginViewController: LoginButtonDelegate {
                 strongSelf.navigationController?.dismiss(animated: true, completion: nil)
             })
         })
-        
-        
     }
-    
     
 }

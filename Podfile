@@ -12,5 +12,8 @@ target 'Messenger' do
   pod 'Firebase/Database'
 
   # Facebook
-  pod 'FBSDKLoginKit'  
+  pod 'FBSDKLoginKit'
+
+  # Google sign in
+  pod 'GoogleSignIn'
 end
