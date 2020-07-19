@@ -24,6 +24,7 @@
 		CAC4EFF224C1FE7E0075E4C8 /* NewConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAC4EFF124C1FE7E0075E4C8 /* NewConversationViewController.swift */; };
 		CAC4EFF424C1FEA40075E4C8 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAC4EFF324C1FEA40075E4C8 /* ProfileViewController.swift */; };
 		CAC4EFF724C207700075E4C8 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAC4EFF624C207700075E4C8 /* Extensions.swift */; };
+		CAD6839A24C4BCD6004EE5F2 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAD6839924C4BCD6004EE5F2 /* StorageManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +48,7 @@
 		CAC4EFF124C1FE7E0075E4C8 /* NewConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewConversationViewController.swift; sourceTree = "<group>"; };
 		CAC4EFF324C1FEA40075E4C8 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		CAC4EFF624C207700075E4C8 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		CAD6839924C4BCD6004EE5F2 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
 		DDB8E2DBE609999C278B1318 /* Pods_Messenger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Messenger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -155,6 +157,7 @@
 				CAC4EFD124C1FACC0075E4C8 /* SceneDelegate.swift */,
 				CAC4EFF624C207700075E4C8 /* Extensions.swift */,
 				CA10E2EC24C3AB39005157A1 /* DatabaseManager.swift */,
+				CAD6839924C4BCD6004EE5F2 /* StorageManager.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -323,6 +326,7 @@
 				CAC4EFD224C1FACC0075E4C8 /* SceneDelegate.swift in Sources */,
 				CA90E1B324C4923A00643F9C /* ChatViewController.swift in Sources */,
 				CAC4EFEE24C1FE330075E4C8 /* PhotoViewerViewController.swift in Sources */,
+				CAD6839A24C4BCD6004EE5F2 /* StorageManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
