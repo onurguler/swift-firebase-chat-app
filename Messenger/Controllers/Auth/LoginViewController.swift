@@ -211,6 +211,8 @@ class LoginViewController: UIViewController {
             
             let user = result.user
             
+            UserDefaults.standard.set(email, forKey: "email")
+            
             print("User \(user) succesfully sign in to app.")
             
             // Go back the main screen - conversations
@@ -301,6 +303,8 @@ extension LoginViewController: FBSDKLoginKit.LoginButtonDelegate {
                     print("Failed to get data from fb result")
                     return
             }
+            
+            UserDefaults.standard.set(email, forKey: "email")
             
             DatabaseManager.shared.userExists(with: email, completion: { exists in
                 if !exists {
