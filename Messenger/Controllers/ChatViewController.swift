@@ -60,6 +60,7 @@ class ChatViewController: MessagesViewController {
     }()
     
     public let otherUserEmail: String
+    private let conversationId: String?
     public var isNewConversation = false
     
     private var messages = [Message]()
@@ -69,12 +70,15 @@ class ChatViewController: MessagesViewController {
             return nil
         }
         
-        return Sender(senderId: email,
-                      displayName: "Joe Smith",
+        let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
+        
+        return Sender(senderId: safeEmail,
+                      displayName: "Me",
                       photoURL: "")
     }
     
-    init(with email: String) {
+    init(with email: String, id: String?) {
+        self.conversationId = id
         self.otherUserEmail = email
         super.init(nibName: nil, bundle: nil)
     }
@@ -106,6 +110,35 @@ class ChatViewController: MessagesViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         messageInputBar.inputTextView.becomeFirstResponder()
+        
+        if let conversationId = conversationId {
+            startListeningForMessages(id: conversationId, shouldScrollToBottom: true)
+        }
+    }
+    
+    private func startListeningForMessages(id: String, shouldScrollToBottom: Bool) {
+        var shouldScrollToBottom = shouldScrollToBottom
+        DatabaseManager.shared.getAllMessagesForConversation(with: id, completion: { [weak self ] result in
+            switch result {
+            case .success(let messages):
+                guard !messages.isEmpty else {
+                    return
+                }
+                
+                self?.messages = messages
+                
+                DispatchQueue.main.async {
+                    if shouldScrollToBottom {
+                        self?.messagesCollectionView.reloadData()
+                        shouldScrollToBottom = false
+                    } else {
+                        self?.messagesCollectionView.reloadDataAndKeepOffset()
+                    }
+                }
+            case .failure(let error):
+                print("Failed to get messages for \(id): \(error)")
+            }
+        })
     }
 
 }
@@ -132,7 +165,7 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
                                   sentDate: Date(),
                                   kind: .text(text))
             
-            DatabaseManager.shared.createNewConversation(with: otherUserEmail, firstMessage: message, completion: { success in
+            DatabaseManager.shared.createNewConversation(with: otherUserEmail, name: self.title ?? "User", firstMessage: message, completion: { success in
                 if success {
                     print("message sent")
                 }
