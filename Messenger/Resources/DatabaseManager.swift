@@ -20,7 +20,7 @@ final class DatabaseManager {
         safeEmail = safeEmail.replacingOccurrences(of: "@", with: "-")
         return safeEmail
     }
-
+    
 }
 
 extension DatabaseManager {
@@ -137,8 +137,8 @@ extension DatabaseManager {
     public func createNewConversation(with otherUserEmail: String, name: String, firstMessage: Message, completion: @escaping (Bool) -> Void) {
         guard let currentEmail = UserDefaults.standard.value(forKey: "email") as? String,
             let currentName = UserDefaults.standard.value(forKey: "name") as? String else {
-            completion(false)
-            return
+                completion(false)
+                return
         }
         
         let safeEmail = DatabaseManager.safeEmail(emailAddress: currentEmail)
@@ -301,7 +301,7 @@ extension DatabaseManager {
         let value: [String: Any] = [
             "messages": [message]
         ]
-
+        
         database.child("\(conversationId)").setValue(value, withCompletionBlock: { error, _ in
             guard error == nil else {
                 completion(false)
@@ -367,7 +367,7 @@ extension DatabaseManager {
                         return nil
                 }
                 
-               
+                
                 
                 let sender = Sender(senderId: senderEmail, displayName: name, photoURL: "")
                 
@@ -487,7 +487,7 @@ extension DatabaseManager {
                     }
                     
                     currentUserConversations[position] = finalConversation
-
+                    
                     strongSelf.database.child("\(currentUserSafeEmail)/conversations").setValue(currentUserConversations, withCompletionBlock: { error, _ in
                         guard error == nil else {
                             completion(false)
